@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>vue常用命令Demo</title>
+		<link rel="stylesheet" type="text/css" href="styles/index.css" />
+	</head>
+
+	<body>
+		<div id="app">
+			<div class="input-box">
+				<label for="name">姓名:
+					<input type="text" id="name"  v-model="person.name"/>
+				</label>
+				<label for="age">年龄:
+					<input type="text" id="age"  v-model="person.age"/>
+				</label>
+				<label for="sex">性别:
+					<select name="sex" id="sex"  v-model="person.sex">
+						<option value="man">男</option>
+						<option value="woman">女</option>
+					</select>
+				</label>
+				<button class="btn" @click="addPerson">提交</button>
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Age</th>
+						<th>Sex</th>
+						<th>Delete</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="list in List">
+						<td>{{ list.name }}</td>
+						<td>{{ list.age }}</td>
+						<td>{{ list.sex }}</td>
+						<td>
+							<button v-on:click="deletePerson($index)">删除</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<script src="js/vue.js"></script>
+		<script type="text/javascript">
+			new Vue({
+				el: "#app",
+				data() {
+					return {
+						//创建添加名单字段
+						person: {
+							name: "",
+							age: "",
+							sex: 'man'
+						},
+						List: [{
+							name: 'Jack',
+							age: 30,
+							sex: 'Male'
+						}, {
+							name: 'Bill',
+							age: 26,
+							sex: 'Male'
+						}, {
+							name: 'Tracy',
+							age: 22,
+							sex: 'Female'
+						}, {
+							name: 'Chris',
+							age: 36,
+							sex: 'Male'
+						}]
+					}
+				},
+				methods: {
+					addPerson: function() {
+						//此处报错,为什么呢?
+						//因为没有用this,使用组件内部数据,要用this指明作用域
+						//						console.log(person);
+						this.List.push(this.person);
+						console.log(this.person);
+					},
+					deletePerson: function(index) {
+						console.log(index);
+						this.List.splice(index, 1);
+
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

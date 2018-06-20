@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ajax CORS实现get</title>
+    <link rel="stylesheet" href="styles/$ajax.css">
+    <link rel="stylesheet" href="styles/iconfont.css">
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <simple-grid :data-list="gridData" :columns="gridColumns">
+            </simple-grid>
+        </div>
+    </div>
+
+    <template id="grid-template">
+        <table>
+            <thead>
+                <tr>
+                    <th v-for="col in columns">
+                        {{col|capitalize}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(index,entry) in dataList">
+                    <td v-for="col in columns">
+                        {{entry[col]}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+
+    <script src="js/vue.js"></script>
+    <!-- 轻量级兼容JQuery的js库 -->
+    <script src="js/zepto.js"></script>
+    <script src="js/ajax-helper.js"></script>
+
+    <script>
+        var ajaxHelper = new AjaxHelper();
+        
+        Vue.component('simple-grid',{
+            template:"#grid-template",
+            props:['dataList','columns']
+        })
+
+        var demo = new Vue({
+            el:"#app",
+            data:{
+                gridColumns:['customerId','companyName','contactName','phone'],
+                gridData:[],
+                apiUrl:"http://211.149.193.19:8080/api/Customers"
+            },
+            //这里是Vue初始化完成后执行的函数
+            ready:function(){
+                this.getCustomers();
+            },
+            methods:{
+                getCustomers:function(){
+                    //定义vm变量,让它指向this,此处this指向Vue实例
+                    var vm = this,
+                    callback = function(data){
+                        //由于函数的作用域,这里不能用this
+                        //全局设置的值
+                        vm.$set('gridData',data)
+                    }
+                    //与get方法一样,我们前面已经定义了ajaxHelper方法
+                    //这里调用,并改为jsonp方法
+                    ajaxHelper.jsonp(vm.apiUrl,null,callback);
+                }
+            }
+        })
+    </script>
+</body>
+</html>

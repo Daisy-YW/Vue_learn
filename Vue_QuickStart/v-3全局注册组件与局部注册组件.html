@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>局部组件和全局组件</title>
+		<link rel="stylesheet" type="text/css" href="styles/index.css"/>
+	</head>
+	<body>
+		<div id="app" class="box">
+			<!--这里调用刚刚注册的组件-->
+			<component-global></component-global>
+		</div>
+		<div id="app2" class="box">
+			<!--这里调用刚刚注册的组件-->
+			<component-loacal></component-loacal>
+			全局声明的变量,可以作用于所有指明的DOM节点中
+			<component-global></component-global>
+		</div>
+		<div id="app3" class="box">
+			这里是app3,vue没有指明作用这个DOM节点,也没有针对app3进行局部组件注册<br />
+			所以局部组件和全局变量在这里全部没办法实现
+			<component-loacal></component-loacal>
+			<component-global></component-global>
+		</div>
+
+		
+		<script src="js/vue.js"></script>
+		<script>
+			//创建一个组件
+			//先声明组件名称
+			var componentGlobal = Vue.extend({
+				template:'<p>###我是全局注册的组件</p'
+			})
+			var componentLocal = Vue.extend({
+				template:'<p>###我是局部注册的组件,只作用于#app2</p'
+			})
+			
+			//注册组件
+			Vue.component('component-global',componentGlobal)
+			
+			//实例化Vue,指明作用范围
+			new Vue({
+				el:"#app"
+			})
+			//实例化Vue,指明作用范围
+			new Vue({
+				el:"#app2",
+				components:{
+					'component-loacal':componentLocal
+				}
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>广播事件</title>
+</head>
+<body>
+    <p>$dispatch与$boradcast已被弃用,Vue2.0使用Vuex</p>
+    <div id="app">
+        <input type="text" v-model="msg"/>
+        <button @click="notify">提交父组件数据给子组件</button>
+        <child-component></child-component>
+    </div>
+    <template id="child-component">
+        <ul>
+            <li v-for="list in message" track-by="$index">父组件传递的数据是:{{list}}</li>
+        </ul>
+    </template>
+
+    <script src="js/vue.js"></script>
+    <script>
+        Vue.component("child-component",{
+            template:"#child-component",
+            data:function(){
+                return{
+                    message:[]
+                }
+            },
+            events:{
+                'parent-msg':function(msg){
+                    this.message.push(msg);
+                    console.log(this.message)
+                }
+            }
+        })
+        new Vue({
+            el:"#app",
+            data:{
+                msg:""
+            },
+            methods:{
+                notify:function(){
+                    if(this.msg.trim()){
+                        this.$broadcast('parent-msg',this.msg);
+                        // 数据一样时会报错,想办法解决
+                        //使用track-by
+                        //track-by已被Vue2替换为key
+                        this.msg = "";
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>

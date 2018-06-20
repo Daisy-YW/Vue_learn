@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>$dispatch派发事件,事件沿着父链冒泡</title>
+</head>
+<body>
+    <p>$dispatch与$boradcast已被弃用,Vue2.0使用Vuex</p>
+    <div id="app">
+        <!-- {{messages|json}}  messages数据转json形式-->
+        <p>Messages:{{messages | json}}</p>  
+         <!--调用子组件  -->
+         <child-component></child-component>
+    </div>
+
+    <template id="child-component">
+        <p>这里是子组件:</p>
+        <!-- v-model双向绑定msg数据 -->
+        <input type="text" v-model="msg">
+        <!-- 点击的时候出发notify事件,将数据通过父链冒泡传递给父组件 -->
+        <button @click="notify">提交数据给父元素</button>
+    </template>
+    <script src="js/vue.js"></script>
+    <script>
+        Vue.component('child-component',{
+            template:"#child-component",
+            data:function(){
+                return{
+                    msg:""
+                }
+            },
+            // 按钮的点击事件,别忘了
+            methods:{
+                notify:function(){
+                    // 字符两边取空格
+                    if(this.msg.trim()){
+                        // this.$dispatch("设置参数名",传入的参数);
+                        //通知父链上的组件,调用child-msg,抓取子组件的msg数据
+                        this.$dispatch('child-msg',this.msg);
+                        this.msg = "";
+                    }
+                }
+            }
+        })
+        //实例化Vue
+        new Vue({
+            el:"#app",
+            data:{
+                // 这里不使用return,数据全局可见
+                messages:[]
+            },
+            events:{
+                'child-msg':function(msg){
+                    this.messages.push(msg);
+                }
+            }
+        })
+    </script>
+</body>
+</html>

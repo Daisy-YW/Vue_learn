@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>props绑定类型-单向绑定</title>
+		<link rel="stylesheet" href="styles/index.css" />
+	</head>
+
+	<body>
+		<div id="app">
+			<p>子使用父数据,单次影响,父子相互不影响(.once)</p>
+			<table>
+				<tr>
+					<th colspan="3">父组件数据</td>
+				</tr>
+				<tr>
+					<td>name</td>
+					<td>{{ myName }}</td>
+					<td><input type="text" v-model="myName" /></td>
+				</tr>
+				<tr>
+					<td>age</td>
+					<td>{{ myAge }}</td>
+					<td><input type="text" v-model="myAge" /></td>
+				</tr>
+			</table>
+			<child v-bind:my-name.once="myName" v-bind:my-age.once="myAge"></child>
+		</div>
+		
+		<template id="child">
+			<table>
+				<tr>
+					<th colspan="3">子组件数据</td>
+				</tr>
+				<tr>
+					<td>my name</td>
+					<td>{{ myName }}</td>
+					<td><input type="text" v-model="myName" /></td>
+				</tr>
+				<tr>
+					<td>my age</td>
+					<td>{{ myAge }}</td>
+					<td><input type="text" v-model="myAge" /></td>
+				</tr>
+			</table>
+		</template>
+		<script src="js/vue.js"></script>
+		<script>
+			new Vue({
+				el: "#app",
+				data: function() {
+					return {
+						myName: "...",
+						myAge: 18
+					}
+				},
+				components: {
+					"child": {
+						template: "#child",
+						props: ['myName', 'myAge']
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

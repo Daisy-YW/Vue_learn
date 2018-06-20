@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ajax CORS实现get</title>
+    <link rel="stylesheet" href="styles/$ajax.css">
+    <link rel="stylesheet" href="styles/iconfont.css">
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <simple-grid :data-list="gridData" :columns="gridColumns">
+            </simple-grid>
+        </div>
+        <div class="container">
+            <div class="form-group">
+                <button @click="this.show=true">创建</button>
+            </div>
+        </div>
+        <!-- 设置对话框slot内容 -->
+        <modal-dialog v-bind:show.sync="show">
+            <header class="dialog-header" slot="header">
+                <h1 class="dialog-title">创建新客户</h1>
+            </header>
+            <div class="dialog-body" slot="body">
+                <div v-show="item.customerId" class="form-group">
+                    <label>客户ID</label>
+                    <input type="text" v-model="item.customerId" disabled="disabled"/>
+                </div>
+                <div class="form-group">
+                    <label>公司名称</label>
+                    <input type="text" v-model="item.companyName">
+                </div>
+                <div class="form-group">
+                    <label>联系人名称</label>
+                    <input type="text" v-model="item.contactName">
+                </div>
+                <div class="form-group">
+                    <label>电话</label>
+                    <input type="text" v-model="item.phone">
+                </div>
+                <div class="form-group">
+                    <label></label>
+                    <button @click="createCustomer"></button>
+                </div>
+            </div>
+        </modal-dialog>
+    </div>
+
+
+    
+    <!-- 表格组件 -->
+    <template id="grid-template">
+        <table>
+            <thead>
+                <tr>
+                    <th v-for="col in columns">
+                        {{col.name|capitalize}}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(index,entry) in dataList">
+                    <td v-for="col in columns">
+                        {{entry[col.name]}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+    <!-- 对话框组件 -->
+    <template id="dialog-template">
+        <div class="dialogs">
+            <div class="dialog" v-bind:class="{'dialog-active':show}">
+                <div class="dialog-content">
+                    <div class="close rotate">
+                        <span class="iconfont icon-close" @click="close"></span>
+                    </div>
+                    <slot name="header"></slot>
+                    <slot name="body"></slot>
+                    <slot name="footer"></slot>
+                </div>
+            </div>
+            <div class="dialog-overlay"></div>
+        </div>
+    </template>
+
+    <script src="js/vue.js"></script>
+    <!-- 轻量级兼容JQuery的js库 -->
+    <script src="js/zepto.js"></script>
+    <script src="js/ajax-helper.js"></script>
+
+    <script>
+        // 组件注册
+        Vue.component('simple-grid',{
+            template:"#grid-template",
+            props:['dataList','columns']
+        })
+        Vue.component('modal-dialog',{
+            template:"#dialog-template",
+            props:['show'],
+            methods:{
+                close:function(){
+                    this.show = false;
+                }
+            }
+        })
+
+
+        var ajaxHelper = new AjaxHelper();
+        
+       
+        var demo = new Vue({
+            el:"#app",
+            data:{
+                show:false,
+                gridColumns:[{
+                    name:"customerId",
+                    isKey:true
+                },{
+                    name:"companyName"
+                },{
+                    name:"contactName"
+                },{
+                    name:"phone"
+                }],
+                gridData:[],
+                apiUrl:"http://211.149.193.19:8080/api/Customers",
+                item:{}
+            },
+            //这里是Vue初始化完成后执行的函数
+            ready:function(){
+                this.getCustomers();
+            },
+            methods:{
+                closeDialog:function(){
+                    this.show = false;
+                },
+                getCustomers:function(){
+                    //定义vm变量,让它指向this,此处this指向Vue实例
+                    var vm = this,
+                    callback = function(data){
+                        //由于函数的作用域,这里不能用this
+                        //全局设置的值
+                        vm.$set('gridData',data)
+                    }
+                    //与get方法一样,我们前面已经定义了ajaxHelper方法
+                    //这里调用,并改为jsonp方法
+                    ajaxHelper.get(vm.apiUrl,null,callback);
+                },
+                createCustomer:function(){
+                    var vm = this,
+                    callback = function(data){
+                        vm.$set('item',{})
+                        //添加成功后,重新加载页面数据
+                        vm.getCustomers()
+                    };
+                    //将vm.item直接POST到服务端
+                    ajaxHelper.post(vm.apiUrl,vm.item,callback)
+                    this.show = false
+                }
+            }
+        })
+
+
+         
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>父组件与子组件</title>
+	</head>
+	<body>
+		<div id="app">
+            <parent-component>
+            </parent-component>
+        </div>
+         <script src="js/vue.js"></script>
+	    <script>
+	        //声明子组件
+	        var Child = Vue.extend({
+	        	template:"<p>我是子组件</p>"
+	        })
+	        
+	        var Parent = Vue.extend({
+	        	template:"<div>我是父组件,接下来我要在我template属性中调用子组件.<child-component/></div>",
+	        	components:{
+	        		"child-component":Child
+	        	}
+	        })
+	        
+	        //这里声明父组件,作用于全局
+	        Vue.component("parent-component",Parent);
+	        
+	        //指明Vue作用范围
+	        new Vue({
+	        	el:"#app"
+	        })
+	    </script>
+	</body>
+</html>

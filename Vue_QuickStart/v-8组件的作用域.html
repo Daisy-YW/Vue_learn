@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>组件的作用域</title>
+	</head>
+	<body>
+		<div id="app">
+			<!--这里调用刚刚注册的组件-->
+			<my-component v-show="display"></my-component>
+		</div>
+		<template id="mycomponent">
+			<div>
+				<p v-on:click="showMsg">{{msg}}</p>
+			</div>
+		</template>
+		
+		<script src="js/vue.js"></script>
+		<script>
+			new Vue({
+				el:"#app",
+				data:{
+					display: true
+				},
+				components:{
+					'my-component':{
+						template:"#mycomponent",
+						data:function(){
+							return{
+								msg:"组件作用域测试",
+								display:false
+							}
+						},
+						methods:{
+							showMsg:function(){
+								alert(this.msg);
+							}
+						}
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

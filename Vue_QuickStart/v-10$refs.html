@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>$refs指定ID值获取子组件数据</title>
+</head>
+<body>
+    <div id="app">
+        <parent-component></parent-component>    
+    </div>
+
+        <template id="parent_component">
+            <p>这里是父组件,下面包含了两个子组件</p>
+            <child-component1 v-ref:child1></child-component1>
+            <child-component2 v-ref:child2></child-component2>
+            <button @click="showChildComponentsData">显示子组件数据</button>    
+        </template>
+        <template id="child-component1">
+            <p>这里是子组件一号</p>
+        </template>
+        <template id="child-component2">
+            <p>这里是子组件二号</p>
+        </template>
+
+        <script src="js/vue.js"></script> 
+        <script>
+            Vue.component("parent-component",{
+                template:"#parent_component",
+                components:{
+                    "child-component1":{
+                        template:"#child-component1",
+                        data:function(){
+                            return{
+                                msg:"子组件数据111"
+                            }
+                        }
+                    },
+                    "child-component2":{
+                        template:"#child-component2",
+                        data:function(){
+                            return{
+                                msg:"子组件数据222"
+                            }
+                        }
+                    }
+                },
+                methods:{
+                    showChildComponentsData:function(){
+                        console.log(this.$refs.child1.msg);
+                        console.log(this.$refs.child2.msg);
+                    }
+                }
+            })
+
+            new Vue({
+                el:"#app"
+            })
+        </script>   
+</body>
+</html>

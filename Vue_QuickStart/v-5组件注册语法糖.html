@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>组件注册语法糖</title>
+	</head>
+	<body>
+		<div id="app">
+			<perent></perent>
+        </div>
+        <div id="app2">
+        	<component-one></component-one>
+        	<component-two>		</component-two>
+        </div>
+        <div id="app3">
+        	<component-three></component-three>
+        </div>
+        
+        <template id="component-three">
+        	<p>组件语法糖---使用template标签</p>
+        </template>
+         <script src="js/vue.js"></script>
+	    <script>
+	        //全局注册组件
+	        Vue.component('perent',{
+	        	template:"<div>组件语法糖注册全局组件</div>"
+	        })
+	        var vue1 = new Vue({
+	        	el:"#app"
+	        })
+	        var vue2 = new Vue({
+	        	el:"#app2",
+	        	components:{
+	        		'component-one':{
+	        			template:"<div>组件语法糖局部注册组件一</div>"
+	        		},
+	        		'component-two':{
+	        			template:"<div>组件语法糖局部注册组件二</div>"
+	        		}
+	        	}
+	        })
+	        
+	        var vue3 = new Vue({
+	        	el:"#app3",
+	        	//template属性调用template的ID值,一定要加#号
+	        	template:"#component-three"
+	        })
+	        new Vue({
+	        	el:"#app3"
+	        })
+	    </script>
+	</body>
+</html>

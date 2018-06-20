@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>组件与prop属性练习</title>
+		<link rel="stylesheet" href="styles/index.css" />
+	</head>
+
+	<body>
+		<div id="app">
+			<div id="searchBar">
+				<label for="keyword">数据筛选关键字：
+				<!--双向绑定设置keywords-->
+					<input type="text" id="keyword" v-model="keyWords"/>
+				</label>
+			</div>
+			<my-child v-bind:word="keyWords" v-bind:name="title" v-bind:content="List"></my-child>
+		</div>
+		<template id="child">
+			<table>
+				<thead>
+					<!--这是标题,并设置首字母大写---|capitalize-->
+					<td v-for="title_font in name">{{title_font|capitalize}}</td>
+				</thead>
+				<tbody>
+					<!--for循环数据内容为list-->
+					<!--filterBy 根据字符过滤数据-->
+					<tr v-for="list in content| filterBy word">
+						<!--循环标题关键字--与对象key一致-->
+						<td v-for="title in name">
+							<!--获取当前内容对应标题的key值-->
+							{{list[title]}}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</template>
+		<script src="js/vue.js"></script>
+		<script>
+			Vue.component("my-child", {
+				template: "#child",
+				//设置接受父数据props属性
+				props: {
+					word: String,
+					name: Array,
+					content: Array
+				}
+			})
+			var v = new Vue({
+				el: "#app",
+				data: function() {
+					return {
+						keyWords: '',
+						title: ["name", "age", "sex"],
+						List: [{
+							name: "大大",
+							age: 10,
+							sex: "男"
+						}, {
+							name: "小小",
+							age: 5,
+							sex: "女"
+						}, {
+							name: "天天",
+							age: 6,
+							sex: "男"
+						}, {
+							name: "亓亓",
+							age: 3,
+							sex: "女"
+						}, {
+							name: "旺财",
+							age: 8,
+							sex: "男"
+						}]
+					}
+				}
+			})
+
+			
+		</script>
+	</body>
+
+</html>

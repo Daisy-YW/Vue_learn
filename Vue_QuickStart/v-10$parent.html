@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>$parent获取父组件数据</title>
+</head>
+<body>
+    <div id="app">
+        <parent-component></parent-component>    
+    </div>
+
+        <template id="parent_component">
+            <p>这里是父组件</p>
+            <child-component></child-component>       
+        </template>
+        <template id="child-component">
+            <p>这里是子组件一号</p>
+            <button @click="showParentComponentsData">显示父组件数据</button> 
+        </template>
+
+        <script src="js/vue.js"></script> 
+        <script>
+            Vue.component("parent-component",{
+                template:"#parent_component",
+                data:function(){
+                    return{
+                        msg:"父组件数据"
+                    }
+                },
+                components:{
+                    "child-component":{
+                        template:"#child-component",
+                        data:function(){
+                            return{
+                                msg:"子组件数据111"
+                            }
+                        },  
+                        methods:{
+                            showParentComponentsData:function(){
+                                console.log(this.$parent.msg);
+                            }
+                        }
+                    }
+                }
+            })
+
+            new Vue({
+                el:"#app"
+            })
+        </script>   
+</body>
+</html>

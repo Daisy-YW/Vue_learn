@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>发送get请求</title>
+</head>
+<body>
+    <script>
+        var demo = new Vue({
+            el:"#app",
+            data:{
+                gridColumns:['custormerId','companyName','contactName','phone'],
+                gridDate:[],
+                apiUrl:"http://211.149.193.19:8080/api/Customers"
+            },
+            ready:function(){
+                this.getCustomers()
+            },
+            methods:{
+                getCustomers:function(data){
+                    //定义vm变量,让它指向this,this是当前的Vue实例
+                    var vm = this;
+                    callback = function(data){
+                        vm.$set('gridData',data)
+                    }
+                    ajaxHelper.get(vm.apiUrl,null,callback)
+                }
+            }
+        })
+    </script>
+</body>
+</html>

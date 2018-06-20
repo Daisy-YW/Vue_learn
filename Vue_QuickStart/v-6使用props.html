@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>使用props</title>
+		<link rel="stylesheet" href="styles/index.css" />
+	</head>
+
+	<body>
+		<div id="app">
+			<Parent></Parent>
+		</div>
+		<template id="list">
+			<ul>
+				<li v-for="list in List">{{list.name}}&nbsp;&nbsp;&nbsp;&nbsp;{{list.age}}&nbsp;&nbsp;&nbsp;&nbsp;{{list.sex}}</li>
+			</ul>
+		</template>
+		<script src="js/vue.js"></script>
+		<script>
+			//创建子组件
+			var Child = Vue.extend({
+				//设置HTML为list里面的html
+				template: "#list",
+				//设置props属性List,用来获取父组件数据
+				props: ['List']
+			});
+
+			new Vue({
+				el: "#app",
+				components: {
+					"Parent": {
+						data: function() {
+							return {
+								Lists: [{
+									name: 'Jack',
+									age: 30,
+									sex: 'Male'
+								}, {
+									name: 'Bill',
+									age: 26,
+									sex: 'Male'
+								}, {
+									name: 'Tracy',
+									age: 22,
+									sex: 'Female'
+								}, {
+									name: 'Chris',
+									age: 36,
+									sex: 'Male'
+								}]
+							}
+						},
+						components: {
+							"Child": Child
+						},
+						//v-bind是在子组件上书写,用于调取父组件数据
+						template: "<div>使用props传数据给子组件<Child  v-bind:List ='Lists'></Child></div>"
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

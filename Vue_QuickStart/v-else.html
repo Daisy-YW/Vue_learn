@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>v-else</title>
+        <link rel="stylesheet" type="text/css" href="styles/index.css"/>
+    </head>
+    <body>
+        <div id="app">
+        	<p>条件if为true:</p>
+            <h1 v-if="age >= 25">Age: {{ age }}</h1>
+            <h1 v-else>Name: {{ name }}</h1>
+            <h1>---------------------分割线---------------------</h1>
+            <p>条件show未false:</p>
+            <h1 v-show="name.indexOf('keep') >= 0">Name: {{ name }}</h1>
+            <h1 v-else>Sex: {{ sex }}</h1>
+        </div>
+    </body>
+    <script src="js/vue.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                age: 28,
+                name: 'fool',
+                sex: 'Male'
+            }
+        })
+    </script>
+</html>
