@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>vue初步知识内容整理</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css" />
+	</head>
+
+	<body>
+		<div class="box">
+			<div class="content">
+				<h1>什么是Vue?</h1>
+				<p>Vue是轻量级的MVVM框架,用于创建用户界面的渐进式框架.</p>
+				<p>同时吸收了React和Angular的优点,强调了React组件化的概念,可以轻松实现数据和展现的分离,吸收了Anguler的指令和页面操作的方法.</p>
+				<p>Vue.js 的核心是一个允许采用简洁的模板语法来声明式地将数据渲染进 DOM 的系统：</p>
+				<img src="images/VueComponent_pic.png" />
+				<ul>
+					<li>template --> 模块,对应文档中HTML部分</li>
+					<li>script --> 脚本,对应JS部分</li>
+					<li>style --> 样式,对应文档中CSS部分</li>
+				</ul>
+			</div>
+		</div>
+		<div class="box">
+			<div class="content">
+				<h1>安装npm和cnpm</h1>
+				<p>npm（node package manager）是nodejs的包管理器，用于node插件管理（包括安装、卸载、管理依赖等）.nodejs可以看
+					<a href="http://nodejs.cn/">Nodejs官网</a>
+				</p>
+				<p>cnpm 淘宝npm镜像&nbsp;&nbsp;&nbsp;&nbsp;因为npm安装插件是从国外服务器下载,受网络影响大,可能会出现异常,如果npm的服务器在中国就好了,所以淘宝团队做了这件事.文档可以看
+					<a href="https://npm.taobao.org/">淘宝npm镜像</a>
+					<p>
+						<a href="https://blog.csdn.net/shelly1072/article/details/51524029">npm和cnpm安装方法</a>
+					</p>
+				</p>
+			</div>
+		</div>
+		<div class="box">
+			<div class="content">
+				<h1>vue项目</h1> # 全局安装 vue-cli <br />$ npm install --global vue-cli <br /># 创建一个基于 webpack 模板的新项目 <br />$ vue init webpack my-project <br /># 安装依赖，走你 <br />$ cd my-project <br />$ npm run dev <br />
+				Use ESLint to lint your code?  这个一定要选NO
+				<p>项目具体操作在src文件夹下</p>
+				<h2>vue项目初始化文件结构</h2>
+				<pre class="prettyprint" name="code">
+					<code class="language-# hljs avrasm has-numbering">├── README<span class="file_suffixes">.md</span>                       // 项目说明文档
+├── node_modules                    // 项目依赖包文件夹
+├── build                           // 编译配置文件，一般不用管
+│&nbsp;&nbsp; ├── build<span class="file_suffixes">.js</span>
+│&nbsp;&nbsp; ├── check-versions<span class="file_suffixes">.js</span>
+│&nbsp;&nbsp; ├── dev-client<span class="file_suffixes">.js</span>
+│&nbsp;&nbsp; ├── dev-server<span class="file_suffixes">.js</span>
+│&nbsp;&nbsp; ├── utils<span class="file_suffixes">.js</span>
+│&nbsp;&nbsp; ├── vue-loader<span class="file_suffixes">.conf</span><span class="file_suffixes">.js</span>
+│&nbsp;&nbsp; ├── webpack<span class="file_suffixes">.base</span><span class="file_suffixes">.conf</span><span class="file_suffixes">.js</span>
+│&nbsp;&nbsp; ├── webpack<span class="file_suffixes">.dev</span><span class="file_suffixes">.conf</span><span class="file_suffixes">.js</span>
+│&nbsp;&nbsp; └── webpack<span class="file_suffixes">.prod</span><span class="file_suffixes">.conf</span><span class="file_suffixes">.js</span>
+├── config                          // 项目基本设置文件夹
+│&nbsp;&nbsp; ├── dev<span class="file_suffixes">.env</span><span class="file_suffixes">.js</span>              // 开发配置文件
+│&nbsp;&nbsp; ├── index<span class="file_suffixes">.js</span>                    // 配置主文件
+│&nbsp;&nbsp; └── prod<span class="file_suffixes">.env</span><span class="file_suffixes">.js</span>             // 编译配置文件
+├── index<span class="file_suffixes">.html</span>                      // 项目入口文件
+├── package-lock<span class="file_suffixes">.json</span>           // npm5 新增文件，优化性能
+├── package<span class="file_suffixes">.json</span>                    // 项目依赖包配置文件
+├── src                             // 我们的项目的源码编写文件
+│&nbsp;&nbsp; ├── App<span class="file_suffixes">.vue</span>                 // APP入口文件
+│&nbsp;&nbsp; ├── assets                      // 初始项目资源目录，回头删掉
+│&nbsp;&nbsp; │&nbsp;&nbsp; └── logo<span class="file_suffixes">.png</span>
+│&nbsp;&nbsp; ├── components              // 组件目录
+│&nbsp;&nbsp; │&nbsp;&nbsp; └── Hello<span class="file_suffixes">.vue</span>           // 测试组件，回头删除
+│&nbsp;&nbsp; ├── main<span class="file_suffixes">.js</span>                 // 主配置文件
+│&nbsp;&nbsp; └── router                      // 路由配置文件夹
+│&nbsp;&nbsp;     └── index<span class="file_suffixes">.js</span>            // 路由配置文件
+└── static                          // 资源放置目录</code>
+</pre>
+			</div>
+		</div>
+		<div class="box">
+			<div class="content">
+				<h1>Vue.js组件的重要选项</h1>
+				<p>可以查看
+					<a href="https://cn.vuejs.org/v2/api">VueAPI官方文档</a>
+				</p>
+				<h3>常用选项/数据</h3>
+				<div class="main">
+					<p class="aggravate">-data
+						<span class="soundmark">/'deɪtə/</span>
+					</p>
+					<p>Vue实例的数据对象。（对象必须是纯粹的对象，含有零个或多个key/value对）。Vue 将会递归将 data 的属性转换为 getter/setter，从而让 data 的属性能够响应数据变化。</p>
+				</div>
+				<div class="main">
+					<p class="aggravate">-methods
+						<span class="soundmark">/'mɛθəd/</span>
+					</p>
+					<p>Vue对象的方式方法。methods将被混入Vue实例中，可以通过VM实例访问这些方法，或者在指令表达式中使用。方法中的this自动绑定Vue实例。</p>
+					<div class="warn">不可以使用箭头函数来定义method函数（eg：plus: () => this.a++）。理由是箭头函数绑定了父级作用域的上下文，所以this将不会按照期望指向Vue实例</div>
+				</div>
+				<div class="main">
+					<p class="aggravate">-watch
+						<span class="soundmark">/wɑtʃ/</span>
+					</p>
+					<p>对象监听方法。一个对象，键是需要观察的表达式，值是对应的回调函数。值也可以是方法名或者包含选项的对象。(Vue提供了一个方法watch，它用于观察Vue实例上的数据变动。对应一个对象，键是观察表达式，值是对应回调。)</p>
+					<div class="warn">同样不能使用箭头函数，原因同上。</div>
+				</div>
+				<h3>常用模板指令</h3>
+				<h4>模板指令——HTML和Vue对象的粘合剂，模板指令是写在HTML中的</h4>
+				<div class="main">
+					<p>数据渲染：v-text、v-html、{{}}</p>
+					<p>控制模块显示隐藏：v-if、v-show</p>
+					<p>控制模块显示隐藏：v-if、v-show</p>
+					<p>渲染循环列表：v-for</p>
+					<p>事件绑定：v-on</p>
+					<p>属性绑定：v-bind</p>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			var a = 0;
+			for(var i = 0; i <= 100; i++) {
+				if(i % 3 == 0) {
+					a = a + i;
+				}
+			}
+			console.log(a);
+		</script>
+	</body>
+
+</html>

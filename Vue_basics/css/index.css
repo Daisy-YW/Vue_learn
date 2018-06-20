@@ -1,0 +1,92 @@
+* {
+	box-sizing: border-box;
+	font-family: "微软雅黑";
+	color: #333;
+}
+
+.box {
+	width: 100%;
+	overflow: hidden;
+	border-bottom: 2px dashed #ddd;
+	padding: 30px 0;
+}
+
+.content {
+	width: 900px;
+	margin: 0 auto;
+}
+
+p {
+	line-height: 28px;
+	font-size: 16px;
+}
+
+a {
+	color: #1abb93;
+}
+img{
+	display: block;
+	margin: 5px 0 ;
+}
+
+.prettyprint {
+	margin: 0 0 24px;
+	padding: 8px 16px 4px 56px;
+	background-color: #f6f8fa;
+	border: none;
+}
+
+code {
+	display: block;
+	font-size: 14px;
+	line-height: 22px;
+	overflow-x: auto;
+	padding: 0;
+	color: #000;
+	white-space: pre;
+	word-wrap: normal;
+	background-color: #f6f8fa;
+	border-radius: 4px;
+}
+.code{
+	padding:0 10px;
+	line-height: 30px;
+	margin: 0;
+}
+/*文件后缀*/
+
+.file_suffixes {
+	color: #090;
+}
+
+.main {
+	margin-bottom: 20px;
+}
+
+.main>p {
+	margin: 10px;
+	line-height: 30px;
+}
+/*加重        /'ægrəveɪt/*/
+
+.aggravate {
+	font-size: 20px;
+	font-weight: bold;
+}
+/*音标*/
+
+.soundmark {
+	font-size: 14px;
+	color: #8e8d8d;
+}
+/*警告*/
+
+.warn {
+	color: #bd1717;
+	width: 100%;
+	padding: 15px 30px;
+	border: 2px solid #f15555;
+	background: #ffeeee;
+	font-size: 14px;
+	margin-top: 20px;
+}
