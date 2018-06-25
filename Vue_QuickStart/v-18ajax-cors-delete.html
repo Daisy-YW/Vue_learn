@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ajax CORS实现get</title>
+    <link rel="stylesheet" href="styles/$ajax.css">
+    <link rel="stylesheet" href="styles/iconfont.css">
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <simple-grid :data-list="gridData" :columns="gridColumns" v-on:load-entry="loadCustomer" v-on:delete-entry="deleteCustomer">
+            </simple-grid>
+        </div>
+        <div class="container">
+            <div class="form-group">
+                <button @click="this.show=true">创建</button>
+            </div>
+        </div>
+
+        <!-- 设置对话框slot内容 -->
+        <modal-dialog v-bind:show.sync="show">
+            <header class="dialog-header" slot="header">
+                    <!-- 根据判断当前是修改数据还是创建客户来展示不同的标题内容 -->
+                <h1 class="dialog-title">{{item.customerId?'修改数据-'+'item.contactName':'创建新用户数据'}}</h1>
+            </header>
+            <div class="dialog-body" slot="body">
+                <div v-show="item.customerId" class="form-group">
+                    <label>客户ID</label>
+                    <input type="text" v-model="item.customerId" disabled="disabled"/>
+                </div>
+                <div class="form-group">
+                    <label>公司名称</label>
+                    <input type="text" v-model="item.companyName">
+                </div>
+                <div class="form-group">
+                    <label>联系人名称</label>
+                    <input type="text" v-model="item.contactName">
+                </div>
+                <div class="form-group">
+                    <label>电话</label>
+                    <input type="text" v-model="item.phone">
+                </div>
+                <div class="form-group">
+                    <label></label>
+                    <button @click="saveCustomer">创建</button>
+                </div>
+            </div>
+        </modal-dialog>
+    </div>
+
+
+    
+    <!-- 表格组件 -->
+    <template id="grid-template">
+        <table>
+            <thead>
+                <tr>
+                    <th v-for="col in columns">
+                        {{col.name|capitalize}}
+                    </th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(index,entry) in dataList">
+                    <td v-for="col in columns">
+                        <span v-if="col.isKey"><a href="javascript:void(0)" @click="loadEntry(entry[col.name])">{{ entry[col.name] }}</a></span>
+                        <span v-else>{{ entry[col.name] }}</span>
+                    </td>
+                    <td>
+                        <!-- 点击触发删除事件 -->
+                        <button class="btn-danger" @click="deleteEntry(entry)">删除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+    <!-- 对话框组件 -->
+    <template id="dialog-template">
+        <div class="dialogs">
+            <div class="dialog" v-bind:class="{'dialog-active':show}">
+                <div class="dialog-content">
+                    <div class="close rotate">
+                        <span class="iconfont icon-close" @click="close"></span>
+                    </div>
+                    <slot name="header"></slot>
+                    <slot name="body"></slot>
+                    <slot name="footer"></slot>
+                </div>
+            </div>
+            <div class="dialog-overlay"></div>
+        </div>
+    </template>
+
+    <script src="js/vue.js"></script>
+    <!-- 轻量级兼容JQuery的js库 -->
+    <script src="js/zepto.js"></script>
+    <script src="js/ajax-helper.js"></script>
+
+    <script>
+        // 组件注册
+        //表格组件
+        Vue.component('simple-grid',{
+            template:"#grid-template",
+            props:['dataList','columns'],
+            methods:{
+                loadEntry:function(key){
+                    this.$dispatch('load-entry',key);
+                },
+                //添加删除数据事件
+                deleteEntry:function(entry){
+                    //使用$dispatch向父组件派发事件delete-entry
+                    this.$dispatch('delete-entry',entry);
+                }
+            }
+        })
+        //对话框组件
+        Vue.component('modal-dialog',{
+            template:"#dialog-template",
+            props:['show'],
+            methods:{
+                close:function(){
+                    this.show = false;
+                }
+            }
+        })
+
+
+        var ajaxHelper = new AjaxHelper();
+        
+       
+        var demo = new Vue({
+            el:"#app",
+            data:{
+                show:false,
+                title:'',
+                gridColumns:[{
+                    name:"customerId",
+                    isKey:true
+                },{
+                    name:"companyName"
+                },{
+                    name:"contactName"
+                },{
+                    name:"phone"
+                }],
+                gridData:[],
+                apiUrl:"http://211.149.193.19:8080/api/Customers",
+                item:{}
+            },
+            //这里是Vue初始化完成后执行的函数
+            ready:function(){
+                this.getCustomers();
+            },
+            methods:{
+                closeDialog:function(){
+                    this.show = false;
+                },
+                getCustomers:function(){
+                    //定义vm变量,让它指向this,此处this指向Vue实例
+                    var vm = this,
+                    success = function(data){
+                        //使用$set将接口中的数据添加到gridData中
+                        vm.$set('gridData',data)
+                    }
+                    //与get方法一样,我们前面已经定义了ajaxHelper方法
+                    //这里调用,并改为jsonp方法
+                    ajaxHelper.get(vm.apiUrl,null,success);
+                },
+                createCustomer:function(){
+                    var vm = this,
+                    success = function(data){
+                        vm.$set('item',{})
+                        //添加成功后,重新加载页面数据
+                        vm.getCustomers()
+                    };
+                    //将vm.item直接POST到服务端
+                    ajaxHelper.post(vm.apiUrl,vm.item,success)
+                },
+                //抓取点击删除的数据内容
+                loadCustomer:function(customerId){
+                    var  vm = this;
+                    vm.gridData.forEach(function(item){
+                        //使用$set设置item
+                        if(item.customerId === customerId){
+                            vm.$set('item',item)
+                            return
+                        }
+                    }),
+                    vm.$set('show',true)
+                },
+                saveCustomer:function(){
+                    this.item.customerId?this.updateCustomer():this.createCustomer()
+                    this.show = false
+                },
+                updateCustomer:function(){
+                    //定义vm变量,让它指向this,this是当前Vue实例
+                    var vm = this,
+                    callback = function(data){
+                        //更新后重新加载页面数据
+                        vm.getCustomers()
+                    }
+                    //将vm.item直接put到服务端
+                    ajaxHelper.put(vm.apiUrl+'/'+vm.item.customerId,vm.item,callback)
+                },
+                deleteCustomer:function(customer){
+                    var vm = this;
+                    callback = function(data){
+                        //删除后重新加载页面
+                        vm.getCustomers()
+                    }
+                    //启动服务端发出delete请求
+                    ajaxHelper.delete(vm.apiUrl+'/'+customer.customerId,null,callback)
+                }
+            }
+        })
+        //观察 Vue 实例变化的一个表达式或计算属性函数。回调函数得到的参数为新值和旧值
+        demo.$watch('show',function(newVal,oldVal){
+            if(!newVal){
+                this.item = {}
+            }
+        })
+
+         
+
+    </script>
+</body>
+</html>
