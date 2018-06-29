@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.css"/>
+    <link rel="stylesheet" href="../styles/custom.css">
+    <style>
+        .row{
+            margin-left:10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="row">
+            <div class="col-xs-offset-2 col-xs-8">
+                <div class="page-header">
+                    <h2>Router Basic-03</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-2 col-xs-offset-2">
+                <div class="list-group">
+                    <!-- 使用v-link进行导航 -->
+                    <a class="list-group-item" v-link="{path:'/home'}">Home</a>
+                    <a class="list-group-item" v-link="{path:'/about'}">about</a>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="panel">
+                    <div class="panel-body">
+                        <!-- 用于渲染匹配的组件 -->
+                        <router-view></router-view>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-offset-2 col-xs-8">
+                <div class="well">
+                    <p>当前路径:<code>{{$route.path}}</code></p>
+                    <p>当前参数:<code>{{$route.params | json}}</code></p>
+                    <p>路由名称:<code>{{$route.name}}</code></p>
+                    <p>路由查询参数:<code>{{$route.query | json}}</code></p>
+                    <p>路由规则所属的路由器(以及其所属的组件):<code>{{$route.router}}</code></p>
+                    <p>路由匹配项: <code>{{$route.matched | json}}</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 主页两个路由组件 -->
+    <template id="home">
+        <div>
+            <h1>Home</h1>
+            <p>{{msg}}</p>
+        </div>
+        <div>
+            <ul class="nav nav-tabs">
+                <li><a v-link="{name:'news'}">News</a></li>
+                <li><a v-link="{path:'/home/message'}">Message</a></li>
+            </ul>
+            <router-view></router-view>
+        </div>
+    </template>
+    <!-- 主页新闻页 -->
+    <template id="news">
+        <ul>
+            <li>
+                <a v-link="{name:'detail',params:{id:'01'}}">New01</a>
+            </li>
+            <li>
+                <a v-link="{path:'/home/news/detail/02'}">New02</a>
+            </li>
+            <li>
+                <a v-link="{path:'/home/news/detail/03'}">New03</a>
+            </li>
+        </ul>
+        <div>
+            <router-view></router-view>
+        </div>
+    </template>
+
+    <template id="newsDetail">
+        <div>
+            News Detail - {{$route.params.id}}......
+        </div>
+    </template>
+    <template id="message">
+        <ul>
+            <li>Message 01</li>
+            <li>Message 02</li>
+            <li>Message 03</li>
+        </ul>
+    </template>
+
+    <template id="about">
+        <div>
+            <h1>About</h1>
+            <p>This is the tutorial about vue-router.</p>
+        </div>
+    </template>
+    <!-- home页的两个路由 -->
+   
+   
+
+
+    <script src="../js/vue.js"></script>
+    <script src="../js/vue-router.js"></script>
+    <script>
+        //创建两个组件构造器
+        var Home = Vue.extend({
+            template:"#home",
+            data:function(){
+                return{
+                    msg:"Hello, vue router"
+                }
+            }
+        })
+        var News = Vue.extend({
+            template:"#news"
+        })
+        var NewDetail = Vue.extend({
+            template:"#newsDetail"
+        })
+        var Message = Vue.extend({
+            template:"#message"
+        })
+        var About = Vue.extend({
+            template:"#about"
+        })
+
+        
+
+        //创建Router
+        //调用狗在其VueRouter,创建一个路由器实例router
+        var router = new VueRouter()
+        //设置默认显示home组件
+        router.redirect({
+            '/':'/home'
+        })
+        //映射路由
+        router.map({
+            //home为路径,{component:Home}则表示该条路由映射的组件
+            '/home':{ 
+                component:Home,
+                //定义子路由
+                subRoutes:{
+                    '/news':{
+                        name:'news',
+                        component: News,
+                        subRoutes:{
+                            'detail/:id':{
+                                name:"detail",
+                                component:NewDetail
+                            }
+                        }
+                    },
+                    '/message':{
+                        component: Message
+                    }
+                }
+            },
+            '/about':{
+                component:About
+            }
+        })
+
+        
+
+        //启动路由
+        //路由器需要一个根组件,router.start(App,'#app')表示router户创建一个App实例,并且挂载到#app元素
+        var App = Vue.extend({})
+        router.start(App,"#app")
+    </script>
+</body>
+</html>

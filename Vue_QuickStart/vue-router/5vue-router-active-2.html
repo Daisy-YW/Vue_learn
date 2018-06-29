@@ -7,6 +7,18 @@
     <title>Document</title>
     <link rel="stylesheet" href="https://bootswatch.com/4/flatly/bootstrap.css"/>
     <link rel="stylesheet" href="../styles/custom.css">
+    <style>
+        .row{
+            margin-left:10px;
+        }
+        .active{
+            background: #12ce22;
+            color: #fff;
+        }
+        .active>a{
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -21,8 +33,8 @@
             <div class="col-xs-2 col-xs-offset-2">
                 <div class="list-group">
                     <!-- 使用v-link进行导航 -->
-                    <a class="list-group-item" v-link="{path:'/home'}">Home</a>
-                    <a class="list-group-item" v-link="{path:'/about'}">about</a>
+                    <a class="list-group-item" v-link="{path:'/home',activeClass:'active'}">Home</a>
+                    <a class="list-group-item" v-link="{path:'/about',activeClass:'active'}">about</a>
                 </div>
             </div>
             <div class="col-xs-6">
@@ -31,6 +43,18 @@
                         <!-- 用于渲染匹配的组件 -->
                         <router-view></router-view>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-offset-2 col-xs-8">
+                <div class="well">
+                    <p>当前路径:<code>{{$route.path}}</code></p>
+                    <p>当前参数:<code>{{$route.params | json}}</code></p>
+                    <p>路由名称:<code>{{$route.name}}</code></p>
+                    <p>路由查询参数:<code>{{$route.query | json}}</code></p>
+                    <p>路由规则所属的路由器(以及其所属的组件):<code>{{$route.router}}</code></p>
+                    <p>路由匹配项: <code>{{$route.matched | json}}</code></p>
                 </div>
             </div>
         </div>
@@ -43,8 +67,8 @@
         </div>
         <div>
             <ul class="nav nav-tabs">
-                <li><a v-link="{path:'/home/news'}">News</a></li>
-                <li><a v-link="{path:'/home/message'}">Message</a></li>
+                <li :class="currentPath=='/home/news'?'active':''"><a v-link="{name:'news'}">News</a></li>
+                <li :class="currentPath=='/home/message'?'active':''"><a v-link="{path:'/home/message'}">Message</a></li>
             </ul>
             <router-view></router-view>
         </div>
@@ -99,7 +123,17 @@
             template:"#home",
             data:function(){
                 return{
-                    msg:"Hello, vue router"
+                    msg:"Hello, vue router",
+                    currentPath:""
+                }
+            },
+            route:{
+                data:function(transition){
+                    transition.next({
+                        //将当前路径赋值给currenPath
+                        currentPath: transition.to.path
+                    })
+                    // console.log(currentPath)
                 }
             }
         })
@@ -133,6 +167,7 @@
                 //定义子路由
                 subRoutes:{
                     '/news':{
+                        name:'news',
                         component: News,
                         subRoutes:{
                             'detail/:id':{
